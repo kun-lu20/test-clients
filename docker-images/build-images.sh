@@ -15,8 +15,8 @@ do
   do
     if [ $MODE = "build" ];
       then
-        DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make java_build --directory=$KAFKA_MODULE
-        DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
+        MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make java_build --directory=$KAFKA_MODULE
+        DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
       else
         DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS-Dkafka.version=$KAFKA_VERSION" make docker_push --directory=$KAFKA_MODULE
     fi
