@@ -14,9 +14,10 @@ DOCKER_TAG         ?= latest
 DOCKER_VERSION_ARG ?= latest
 
 ifdef DOCKER_ARCHITECTURE
-  DOCKER_PLATFORM = --platform linux/$(DOCKER_ARCHITECTURE)
+  #DOCKER_PLATFORM = --platform linux/$(DOCKER_ARCHITECTURE)
   DOCKER_PLATFORM_TAG_SUFFIX = -$(DOCKER_ARCHITECTURE)
 endif
+DOCKER_PLATFORM_TAG_SUFFIX = -amd64
 
 all: docker_build docker_push
 
