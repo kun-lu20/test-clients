@@ -15,7 +15,8 @@ do
   do
     if [ $MODE = "build" ];
       then
-        DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make build --directory=$KAFKA_MODULE
+        DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make java_build --directory=$KAFKA_MODULE
+        DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
       else
         DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS-Dkafka.version=$KAFKA_VERSION" make docker_push --directory=$KAFKA_MODULE
     fi
@@ -26,7 +27,8 @@ for HTTP_MODULE in $HTTP_MODULES
 do
   if [ $MODE = "build" ];
   then
-    make build --directory=$HTTP_MODULE
+    make java_build --directory=$HTTP_MODULE
+    make docker_build --directory=$HTTP_MODULE
   else
     make docker_push --directory=$HTTP_MODULE
   fi
