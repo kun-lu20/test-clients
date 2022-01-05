@@ -17,7 +17,10 @@ do
     if [ $MODE = "build" ];
     then
       MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make java_build --directory=$KAFKA_MODULE
-      DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
+      for ARCH in $ARCHITECTURES
+      do
+        DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
+      do
       #for ARCH in $ARCHITECTURES
       #do
         #DOCKER_ARCHITECTURE=$ARCH DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make docker_build
@@ -38,7 +41,10 @@ do
   if [ $MODE = "build" ];
   then
     make java_build --directory=$HTTP_MODULE
-    make docker_build --directory=$HTTP_MODULE
+    for ARCH in $ARCHITECTURES
+    do
+      make docker_build --directory=$HTTP_MODULE
+    do
     #for ARCH in $ARCHITECTURES
     #do
     #  DOCKER_ARCHITECTURE=$ARCH make docker_build
