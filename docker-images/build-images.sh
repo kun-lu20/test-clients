@@ -15,14 +15,19 @@ do
   for KAFKA_MODULE in $KAFKA_MODULES
   do
     if [ $MODE = "build" ];
-      then
-        MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make java_build --directory=$KAFKA_MODULE
-        for ARCH in $ARCHITECTURES
-        do
-          DOCKER_ARCHITECTURE=$ARCH DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
-        done
-      else
-        DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" MVN_ARGS="$MVN_ARGS-Dkafka.version=$KAFKA_VERSION" make docker_push --directory=$KAFKA_MODULE
+    then
+      MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make java_build --directory=$KAFKA_MODULE
+      for ARCH in $ARCHITECTURES
+      do
+        DOCKER_ARCHITECTURE=$ARCH DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
+      done
+    else
+      DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_delete_manifest --directory=$KAFKA_MODULE
+      for ARCH in $ARCHITECTURES
+      do
+        DOCKER_ARCHITECTURE=$ARCH DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_push docker_amend_manifest --directory=$KAFKA_MODULE
+      done
+      DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_push_manifest --directory=$KAFKA_MODULE
     fi
   done
 done
@@ -37,6 +42,11 @@ do
       DOCKER_ARCHITECTURE=$ARCH make docker_build --directory=$HTTP_MODULE
     done
   else
-    make docker_push --directory=$HTTP_MODULE
+    make docker_delete_manifest --directory=$HTTP_MODULE
+    for ARCH in $ARCHITECTURES
+    do
+      DOCKER_ARCHITECTURE=$ARCH make docker_push docker_amend_manifest --directory=$HTTP_MODULE
+    done
+    make docker_push_manifest --directory=$HTTP_MODULE
   fi
 done
