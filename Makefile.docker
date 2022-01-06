@@ -13,13 +13,18 @@ DOCKER_ORG         ?= $(USER)
 DOCKER_TAG         ?= latest
 DOCKER_VERSION_ARG ?= latest
 
+ifdef DOCKER_ARCHITECTURE
+  DOCKER_PLATFORM = --platform linux/$(DOCKER_ARCHITECTURE)
+  DOCKER_PLATFORM_TAG_SUFFIX = -$(DOCKER_ARCHITECTURE)
+endif
+
 all: docker_build docker_push
 
 docker_build:
 	echo "Building Docker image ..."
 	mkdir -p scripts
 	cp ../../scripts/run.sh ./scripts/run.sh
-	docker build --platform linux/amd64 --build-arg version=$(DOCKER_VERSION_ARG) -t strimzi/$(PROJECT_NAME):$(DOCKER_TAG)-amd64 $(DOCKERFILE_DIR)
+	docker build $(DOCKER_PLATFORM) --build-arg version=$(DOCKER_VERSION_ARG) -t strimzi/$(PROJECT_NAME):$(DOCKER_TAG)$(DOCKER_PLATFORM_TAG_SUFFIX) $(DOCKERFILE_DIR)
 	rm -rf ./scripts
 
 docker_tag:
