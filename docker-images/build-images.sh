@@ -3,8 +3,8 @@
 KAFKA_VERSIONS=$(cat docker-images/kafka.version)
 KAFKA_MODULES=$(ls -d kafka/*/ | grep -Ev ".*/target/")
 HTTP_MODULES=$(ls -d http/*/ | grep -Ev ".*/target/")
-ARCHITECTURES="amd64 s390x"
-MODE=${1:-"push"}
+ARCHITECTURES=${1:-"amd64"}
+MODE=${2:-"push"}
 DOCKER_TAG=${DOCKER_TAG:-"latest"}
 MVN_ARGS=${MVN_ARGS:-""}
 
@@ -19,7 +19,7 @@ do
       MVN_ARGS="$MVN_ARGS -Dkafka.version=$KAFKA_VERSION" make java_build --directory=$KAFKA_MODULE
       for ARCH in $ARCHITECTURES
       do
-        DOCKER_ARCHITECTURE=$ARCH DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
+        DOCKER_ARCHITECTURE=$ARCH DOCKER_BUILDX=buildx DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_build --directory=$KAFKA_MODULE
       done
     else
       DOCKER_TAG="$DOCKER_TAG-kafka-$KAFKA_VERSION" make docker_delete_manifest --directory=$KAFKA_MODULE
@@ -39,7 +39,7 @@ do
     make java_build --directory=$HTTP_MODULE
     for ARCH in $ARCHITECTURES
     do
-      DOCKER_ARCHITECTURE=$ARCH make docker_build --directory=$HTTP_MODULE
+      DOCKER_ARCHITECTURE=$ARCH DOCKER_BUILDX=buildx make docker_build --directory=$HTTP_MODULE
     done
   else
     make docker_delete_manifest --directory=$HTTP_MODULE
