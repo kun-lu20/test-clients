@@ -3,6 +3,7 @@
 set -e
 
 export DOCKER_ORG=${DOCKER_ORG:-strimzi-test-clients}
+export DOCKER_ORG=$DOCKER_USER
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-quay.io}
 
 echo "Build reason: ${BUILD_REASON}"
